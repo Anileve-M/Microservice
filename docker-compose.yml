@@ -1,0 +1,30 @@
+services:
+  database:
+    container_name: database-two-microservices
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: Kb%8zh_1q
+      POSTGRES_DATABASE: TwoMicroservices
+    ports:
+      - "7203:7203"
+  server:
+    container_name: backend-two-microservices
+    build: ./
+    image: two-microservices:latest
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:7203/TwoMicroservices
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Kb%8zh_1q
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_LIQUIBASE_URL: jdbc:postgresql://database:7203/TwoMicroservices
+      SPRING_LIQUIBASE_USER: postgres
+      SPRING_LIQUIBASE_PASSWORD: Kb%8zh_1q
+    ports:
+      - "9090:9090"
+    depends_on:
+      - database
+volumes:
+  postgres_data:
